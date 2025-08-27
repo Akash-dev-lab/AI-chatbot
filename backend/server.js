@@ -4,25 +4,43 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const generateResponse = require('./src/services/ai.services')
 
-const httpServer = createServer();
-const io = new Server(httpServer, { /* options */ });
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*", 
+    methods: ["GET", "POST"]
+  }
+});
+
+const chatHistory = {};
 
 io.on("connection", (socket) => {
   console.log("A user connected.")
 
-  socket.on("disconnected", () => {
+  chatHistory[socket.id] = [];
+
+  socket.emit("chat-history", chatHistory[socket.id]);
+
+  socket.on("disconnect", () => {
     console.log("A user disconnected.")
+    delete chatHistory[socket.id];
   })
 
   socket.on("ai-message", async (data) => {
+    
+    const userMessage = { sender: "user", text: data.prompt };
+    chatHistory[socket.id].push(userMessage);
+
     console.log("Prompt: ", data.prompt)
     const response = await generateResponse(data.prompt)
-    console.log(response)
+    const botMessage = { sender: "bot", text: response };
     socket.emit("ai-response", {response})
+    chatHistory[socket.id].push(botMessage);
+    socket.emit("chat-history", chatHistory[socket.id]);
   })
 });
 
 
-httpServer.listen(3000, () => {
+httpServer.listen(process.env.PORT || 3000, () => {
     console.log("Server is Running...")
 })
