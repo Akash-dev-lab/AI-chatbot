@@ -1,29 +1,11 @@
 require('dotenv').config()
 const app = require('./app')
-const { createServer } = require("http");
-const { Server } = require("socket.io");
 const connectDB = require('./src/db/db')
+const httpServer = require("http").createServer(app)
+const initSocketServer = require("./src/sockets/socket.server")
 
 connectDB()
-
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: "*", 
-    methods: ["GET", "POST"]
-  }
-});
-
-
-io.on("connection", (socket) => {
-  console.log("A user connected.")
-
-
-  socket.on("disconnect", () => {
-    console.log("A user disconnected.")
-  })
-});
-
+initSocketServer(httpServer)
 
 httpServer.listen(process.env.PORT || 3000, () => {
     console.log("Server is Running...")
