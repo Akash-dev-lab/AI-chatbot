@@ -20,7 +20,7 @@ const userSchema = mongoose.Schema({
     },
 
     password: String
-})
+}, {timestamps: true})
 
 const userModel = mongoose.model("user", userSchema)
 
