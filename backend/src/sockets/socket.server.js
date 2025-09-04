@@ -61,12 +61,30 @@ function initSocketServer(httpServer) {
                 chat: messagePayload.chat,
             }).sort({createdAt: -1}).limit(20).lean()).reverse()
 
-            const response = await generateResponse(chatHistory.map((item) => {
+            const stm = chatHistory.map(item => {
                 return {
                     role: item.role,
-                    parts: [ {text: item.content} ]
+                    parts: [ { text: item.content }]
                 }
-            }))
+            })
+
+            const ltm = [
+                {
+                    role: "user",
+                    parts: [
+                        {
+                            text: `these are some previous message from the chat, use them to generate a response ${memory.map(item => item.metadata.text).join("\n")}`
+                        }
+                    ]
+                }
+            ]
+
+            console.log(ltm[0])
+            console.log(stm)
+
+
+
+            const response = await generateResponse([...ltm, ...stm])
 
             const responseMessage = await messageModel.create({
                 chat: messagePayload.chat,
