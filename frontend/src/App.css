@@ -1,0 +1,42 @@
+:root {
+  --background-color: #f0f2f5;
+  --form-background: #fff;
+  --text-color: #1c1e21;
+  --subtle-text-color: #606770;
+  --input-border-color: #dddfe2;
+  --input-focus-border-color: #1877f2;
+  --input-focus-shadow: rgba(24, 119, 242, 0.2);
+  --placeholder-color: #999;
+  --primary-button-bg: #1877f2;
+  --primary-button-hover-bg: #166fe5;
+  --primary-button-text: #fff;
+  --link-color: #1877f2;
+}
+
+[data-theme='dark'] {
+  --background-color: #18191a;
+  --form-background: #242526;
+  --text-color: #e4e6eb;
+  --subtle-text-color: #b0b3b8;
+  --input-border-color: #3a3b3c;
+  --input-focus-border-color: #4599ff;
+  --input-focus-shadow: rgba(69, 153, 255, 0.2);
+  --placeholder-color: #8a8d91;
+  --primary-button-bg: #2d88ff;
+  --primary-button-hover-bg: #4599ff;
+  --primary-button-text: #fff;
+  --link-color: #4599ff;
+}
+
+.theme-toggle-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--input-border-color);
+  background-color: var(--form-background);
+  color: var(--text-color);
+  cursor: pointer;
+  z-index: 1000;
+}
