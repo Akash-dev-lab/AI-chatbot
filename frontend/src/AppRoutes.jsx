@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/Home.jsx";
+import Home from "./pages/Home.jsx";
 import Register from "./components/Register.jsx";
 import Login from "./components/Login.jsx";
 import { ThemeProvider, useTheme } from "./context/ThemeContext.jsx";
@@ -10,7 +10,7 @@ const AppContent = () => {
 	return (
 		<div data-theme={theme}>
 			<button onClick={toggleTheme} className="theme-toggle-button">
-				Switch to {theme === 'light' ? 'Dark' : 'Light'} Mode
+				{theme === <i className="ri-moon-line"></i> ? <i className="ri-moon-fill"></i> : <i className="ri-moon-fill"></i>}
 			</button>
 			<Routes>
 				<Route path="/" element={<Home />} />

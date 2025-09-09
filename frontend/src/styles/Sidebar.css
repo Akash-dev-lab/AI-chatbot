@@ -1,0 +1,169 @@
+/* Sidebar default (desktop visible) */
+/* Sidebar Base */
+.sidebar {
+  width: 260px;
+  background: #1e1f25;
+  color: #fff;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease-in-out;
+  padding: 1rem 0;
+}
+
+/* Top Section */
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 2.5rem;
+  padding: 0 1rem;
+}
+
+.sidebar-option {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.sidebar-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Divider */
+.divider {
+  margin: 1rem 0;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Hide scrollbar for chats section (Webkit browsers) */
+.chats::-webkit-scrollbar {
+  display: none;
+}
+
+/* Chats Section */
+.chats {
+  flex: 1; /* take available space */
+  padding: 0 1rem;
+  overflow-y: auto;
+}
+
+.chats-heading {
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
+  color: #aaa;
+}
+
+.chat-item {
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.chat-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Bottom Section */
+.sidebar-bottom {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.profile-pic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.upgrade-btn {
+  background: #e0531f;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.upgrade-btn:hover {
+  background: #ff7043;
+}
+
+
+/* Mobile Sidebar (hidden by default) */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+}
+
+/* Hamburger button (mobile only) */
+/* Hamburger button (mobile only) */
+.hamburger {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1100;
+  width: 30px;
+  height: 24px;
+  display: none; /* default: hidden */
+  flex-direction: column;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.fa-bars {
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+}
+
+@media (min-width: 769px) {
+  .hamburger {
+    display: none;
+  }
+}
+
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+}
