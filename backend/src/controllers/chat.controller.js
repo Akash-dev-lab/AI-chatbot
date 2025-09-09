@@ -20,6 +20,19 @@ async function createChat(req, res) {
     })
 }
 
+async function getChats(req, res) {
+    const user = req.user
+
+    try {
+        const chats = await chatModel.find({ user: user._id }).sort({ updatedAt: -1 })
+        res.status(200).json({ chats })
+    } catch (error) {
+        res.status(500).json({ message: "Error fetching chats", error: error.message })
+    }
+}
+
+
 module.exports = {
-    createChat
+    createChat,
+    getChats
 }

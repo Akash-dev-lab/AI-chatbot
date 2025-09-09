@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Register.css'; 
+import '../styles/Register.css';
 
 const Login = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -16,19 +16,26 @@ const Login = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    axios.post("http://localhost:3000/api/auth/login", {
-        email: formData.email,
-        password: formData.password
-    },
-    { withCredentials: true })
-    .then((res) => {
-        console.log(res)
-        navigate("/")
-    }).catch((err) => {
-        console.error(err)
-    });
-    console.log('Form data submitted:', formData);
-  };
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/auth/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        { withCredentials: true }
+      );
+
+      console.log("Login Response:", res.data);
+
+
+      navigate("/");
+    } catch (err) {
+      console.error("Login Failed:", err.response?.data || err.message);
+    }
+
+    console.log("Form data submitted:", formData);
+  }
 
   return (
     <div className="register-container">
@@ -61,7 +68,9 @@ const Login = () => {
         </div>
         <button type="submit">Log in</button>
         <div className="form-footer">
-          <p>Don't have an account? <a href="/register">Sign up</a></p>
+          <p>
+            Don't have an account? <a href="/register">Sign up</a>
+          </p>
         </div>
       </form>
     </div>
