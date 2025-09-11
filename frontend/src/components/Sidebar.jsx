@@ -5,13 +5,13 @@ import { toggleSidebar } from "../features/sidebar/sidebarSlice";
 import { fetchChats, createChat, setActiveChat } from "../features/chats/chatsSlice";
 import { useState, useEffect } from "react";
 import NewChatModal from "./NewChatModal";
+import ThemeToggle from "./ThemeToggle";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const { isOpen } = useSelector((state) => state.sidebar);
   const user = useSelector((state) => state.user);
   const { list = [], activeChatId } = useSelector((state) => state.chats);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
 
@@ -79,6 +79,7 @@ const Sidebar = () => {
           <button className="upgrade-btn">
             {user?.plan === "Free" ? "Upgrade" : "Pro"}
           </button>
+           <ThemeToggle />
         </div>
       </div>
 

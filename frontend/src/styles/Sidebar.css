@@ -1,9 +1,7 @@
-/* Sidebar default (desktop visible) */
-/* Sidebar Base */
 .sidebar {
   width: 260px;
-  background: #1e1f25;
-  color: #fff;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -12,7 +10,7 @@
   padding: 1rem 0;
 }
 
-/* Top Section */
+
 .sidebar-top {
   display: flex;
   flex-direction: column;
@@ -35,21 +33,21 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Divider */
+
 .divider {
   margin: 1rem 0;
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Hide scrollbar for chats section (Webkit browsers) */
+
 .chats::-webkit-scrollbar {
   display: none;
 }
 
-/* Chats Section */
+
 .chats {
-  flex: 1; /* take available space */
+  flex: 1;
   padding: 0 1rem;
   overflow-y: auto;
 }
@@ -57,7 +55,7 @@
 .chats-heading {
   font-size: 0.9rem;
   margin-bottom: 0.6rem;
-  color: #aaa;
+  color: var(--text-color);
 }
 
 .chat-item {
@@ -71,7 +69,7 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* Bottom Section */
+
 .sidebar-bottom {
   padding: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
@@ -94,8 +92,8 @@
 }
 
 .upgrade-btn {
-  background: #e0531f;
-  color: #fff;
+  background: var(--button-bg);
+  color: var(--button-text);
   border: none;
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
@@ -108,7 +106,6 @@
 }
 
 
-/* Mobile Sidebar (hidden by default) */
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
