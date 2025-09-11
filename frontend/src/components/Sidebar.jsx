@@ -1,4 +1,3 @@
-// src/components/Sidebar.jsx
 import "../styles/Sidebar.css";
 import { FaPlus, FaSearch, FaBook, FaBars } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,16 +10,17 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const { isOpen } = useSelector((state) => state.sidebar);
   const user = useSelector((state) => state.user);
-  const { list, activeChatId } = useSelector((state) => state.chats);
+  const { list = [], activeChatId } = useSelector((state) => state.chats);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
 
-   // Fetch chats on mount
+  // ✅ Fetch chats on mount
   useEffect(() => {
     dispatch(fetchChats());
   }, [dispatch]);
 
-  // Create new chat
+  // ✅ Create new chat
   const handleCreateChat = () => {
     if (!title.trim()) return;
     dispatch(createChat(title));
@@ -55,7 +55,7 @@ const Sidebar = () => {
         {/* Chats List */}
         <div className="chats">
           <h4 className="chats-heading">Chats</h4>
-          {(list && list.length > 0) ? (
+          {list.length > 0 ? (
             list.map((chat) => (
               <div
                 key={chat._id}
