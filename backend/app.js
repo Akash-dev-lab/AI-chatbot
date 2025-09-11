@@ -3,6 +3,7 @@ const cors = require('cors')
 const authRoutes = require('./src/routes/auth.routes')
 const chatRoutes = require('./src/routes/chat.routes')
 const cookieParser = require("cookie-parser");
+const messageRoutes = require("./src/routes/message.routes");
 
 const app = express()
 
@@ -16,7 +17,7 @@ app.use(cookieParser())
 
 app.use("/api/auth/", authRoutes)
 app.use("/api/chat/", chatRoutes )
-// app.use("/api/chats/", getchatRoutes )
+app.use("/api/message", messageRoutes)
 
 
 module.exports = app

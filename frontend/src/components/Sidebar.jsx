@@ -1,8 +1,9 @@
+// src/components/Sidebar.jsx
 import "../styles/Sidebar.css";
 import { FaPlus, FaSearch, FaBook, FaBars } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleSidebar } from "../features/sidebar/sidebarSlice";
-import { fetchChats, createChat as createChatThunk } from "../features/chats/chatsSlice";
+import { fetchChats, createChat, setActiveChat } from "../features/chats/chatsSlice";
 import { useState, useEffect } from "react";
 import NewChatModal from "./NewChatModal";
 
@@ -10,26 +11,22 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const { isOpen } = useSelector((state) => state.sidebar);
   const user = useSelector((state) => state.user);
-  const { chatList = [], loading, error } = useSelector((state) => state.chats || {});
-
+  const { list, activeChatId } = useSelector((state) => state.chats);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
 
-  // Open New Chat Modal
-  const handleNewChat = () => setIsModalOpen(true);
-
-  // Create new chat and update Redux automatically
-  const handleCreateChat = () => {
-    if (!title || title.trim() === "") return;
-    dispatch(createChatThunk(title));
-    setIsModalOpen(false);
-    setTitle(""); // reset input after creation
-  };
-
-  // Fetch chats on component mount
+   // Fetch chats on mount
   useEffect(() => {
     dispatch(fetchChats());
   }, [dispatch]);
+
+  // Create new chat
+  const handleCreateChat = () => {
+    if (!title.trim()) return;
+    dispatch(createChat(title));
+    setIsModalOpen(false);
+    setTitle("");
+  };
 
   return (
     <>
@@ -42,7 +39,7 @@ const Sidebar = () => {
       <div className={`sidebar ${isOpen ? "active" : ""}`}>
         {/* Top Section */}
         <div className="sidebar-top">
-          <div className="sidebar-option" onClick={handleNewChat}>
+          <div className="sidebar-option" onClick={() => setIsModalOpen(true)}>
             <FaPlus /> <span>New chat</span>
           </div>
           <div className="sidebar-option">
@@ -55,23 +52,21 @@ const Sidebar = () => {
 
         <hr className="divider" />
 
-        {/* Chats Section */}
+        {/* Chats List */}
         <div className="chats">
           <h4 className="chats-heading">Chats</h4>
-          {loading ? (
-            <p>Loading chats...</p>
-          ) : error ? (
-            <p>Error: {error}</p>
-          ) : chatList.length === 0 ? (
-            <p>No chats found.</p>
+          {(list && list.length > 0) ? (
+            list.map((chat) => (
+              <div
+                key={chat._id}
+                className={`chat-item ${activeChatId === chat._id ? "active" : ""}`}
+                onClick={() => dispatch(setActiveChat(chat._id))}
+              >
+                {chat.title}
+              </div>
+            ))
           ) : (
-            <ul>
-              {chatList.map((chat) => (
-                <li key={chat._id} className="chat-item">
-                  {chat.title}
-                </li>
-              ))}
-            </ul>
+            <p className="no-chats">No chats yet</p>
           )}
         </div>
 
@@ -87,7 +82,7 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* 🔹 Modal Component */}
+      {/* Modal */}
       <NewChatModal
         isOpen={isModalOpen}
         title={title}

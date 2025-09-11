@@ -34,7 +34,14 @@ const chatSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+     setChats: (state, action) => {
+      state.list = action.payload;
+    },
+    setActiveChat: (state, action) => {
+      state.activeChatId = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Fetch chats
@@ -44,7 +51,7 @@ const chatSlice = createSlice({
       })
       .addCase(fetchChats.fulfilled, (state, action) => {
         state.loading = false;
-        state.chatList = action.payload;
+        state.list = action.payload;
       })
       .addCase(fetchChats.rejected, (state, action) => {
         state.loading = false;
@@ -57,7 +64,9 @@ const chatSlice = createSlice({
       })
       .addCase(createChat.fulfilled, (state, action) => {
         state.loading = false;
-        state.chatList.unshift(action.payload); // new chat on top
+        if (!state.list) state.list = []; 
+        state.list.push(action.payload);
+        state.activeChatId = action.payload._id;
       })
       .addCase(createChat.rejected, (state, action) => {
         state.loading = false;
@@ -65,5 +74,7 @@ const chatSlice = createSlice({
       });
   },
 });
+
+export const { setChats, setActiveChat } = chatSlice.actions;
 
 export default chatSlice.reducer;
