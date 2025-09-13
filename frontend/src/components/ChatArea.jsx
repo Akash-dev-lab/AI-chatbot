@@ -7,8 +7,9 @@ import { fetchMessages, addMessage } from "../features/messages/messageSlice";
 const ChatArea = () => {
   const dispatch = useDispatch();
   const { items: messagesByChat, loading } = useSelector((state) => state.messages);
-  const { activeChatId: chatId } = useSelector((state) => state.chats);
+  const { activeChatId: chatId, list } = useSelector((state) => state.chats);
   const user = useSelector((state) => state.user);
+  const activeChat = chatId ? list.find((chat) => chat._id === chatId) : null;
 
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -97,6 +98,9 @@ const ChatArea = () => {
 
   return (
     <div className="chat-area">
+      <div className="chat-header">
+        {activeChat ? `${activeChat.title}✨` : "No chat selected"}
+      </div>
       <div className="messages">
           {loading ? (
             <p>Loading...</p>

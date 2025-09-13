@@ -51,7 +51,7 @@
     display: none;
   }
   font-size: 2.2rem;
-  margin-top: 10vh;
+  /* margin-top: 5vh; */
   flex-direction: column;
   gap: 10px;
   position: relative;

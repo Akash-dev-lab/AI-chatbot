@@ -154,3 +154,41 @@ html, body {
     @apply bg-background text-foreground;
   }
 }
+
+.chat-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 30px;
+  margin-top: 5vh;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 600;
+  color: white;
+  background: rgba(255, 255, 255, 0.1); /* transparent */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(12px); /* Glass effect */
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Optional: Fine-tune at Tailwind breakpoints */
+@media (max-width: 1024px) {
+  .chat-header {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+    padding: 10px 20px;
+  }
+}
+@media (max-width: 768px) {
+  .chat-header {
+    font-size: clamp(1.2rem, 7vw, 2.2rem);
+    padding: 8px 16px;
+    margin-top: 7vh;
+  }
+}
+@media (max-width: 640px) {
+  .chat-header {
+    font-size: clamp(1rem, 8vw, 1.5rem);
+    padding: 6px 10px;
+  }
+}
