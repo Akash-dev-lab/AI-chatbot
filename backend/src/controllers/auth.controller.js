@@ -2,6 +2,7 @@ const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
 async function registerController(req, res) {
   const {
     fullName: { firstName, lastName },
@@ -67,8 +68,8 @@ async function loginController(req, res) {
 
   res.cookie("token", token, {
     httpOnly: true,
-    secure: false, // 👈 localhost pe false rakh
-    sameSite: "lax", // ya "none" agar alag domains use ho
+    secure: false,
+    sameSite: "lax",
   });
 
   const user = {
@@ -86,7 +87,21 @@ async function loginController(req, res) {
   });
 }
 
+async function profileController(req, res) {
+    try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const user = await userModel.findById(req.user._id).select("-password");
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch user" });
+  }
+}
+
 module.exports = {
   registerController,
   loginController,
+  profileController,
 };

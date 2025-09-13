@@ -3,9 +3,27 @@
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  background-color: var(--bg-color);
   color: var(--text-color);
   padding: 0 50px 0 50px;
+  position: relative;
+  overflow: hidden; /* To contain the background elements */
+}
+
+.chat-area-background {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(138, 46, 226, 0.5) 0%, rgba(255, 0, 128, 0.3) 40%, transparent 70%);
+  animation: rotate 20s infinite linear;
+  z-index: 1;
+  filter: blur(50px);
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .welcome-screen {
@@ -18,11 +36,7 @@
   padding-bottom: 20vh; /* Push content up */
 }
 
-.welcome-content h2 {
-  font-size: 2.5rem;
-  font-weight: 500;
-  margin-bottom: 2rem;
-}
+
 
 .messages {
   /* flex-grow: 1; */
@@ -40,6 +54,8 @@
   margin-top: 10vh;
   flex-direction: column;
   gap: 10px;
+  position: relative;
+  z-index: 2;
 }
 
 .chat-input-container {
@@ -57,6 +73,8 @@
   border-radius: 25px;
   padding: 5px 10px;
   margin-bottom: 22px;
+  position: relative;
+  z-index: 2;
 }
 
 .chat-input input {
@@ -89,6 +107,24 @@
 
 .chat-input .chat-input-btn:hover {
   color: var(--button-text);
+}
+
+.chat-area-header {
+  position: relative;
+  z-index: 2;
+  padding: 20px;
+  text-align: center;
+  background-color: transparent; /* Ensure it's see-through */
+  backdrop-filter: blur(5px); /* Subtle foggy effect on the header bar */
+  -webkit-backdrop-filter: blur(5px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-area-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Responsive Styles */

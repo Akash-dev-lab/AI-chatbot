@@ -22,17 +22,19 @@
 .register-form h2 {
   margin-bottom: 0.5rem;
   color: var(--text-color);
-  font-size: 1.5rem;
+  font-size: 2.5rem;
 }
 
 .register-form p {
   margin-bottom: 1.5rem;
   color: var(--subtle-text-color);
+  font-size: 1rem;
 }
 
 .input-group {
   margin-bottom: 1.25rem;
   text-align: left;
+  padding: 15px;
 }
 
 .input-group label {
@@ -55,7 +57,7 @@
 }
 
 .input-group input:focus {
-  outline: none;
+  outline: 1px solid gray;
   border-color: var(--input-focus-border-color);
   box-shadow: 0 0 0 2px var(--input-focus-shadow);
 }
@@ -67,6 +69,7 @@
 .name-group {
   display: flex;
   flex-direction: column;
+  padding: 20px;
   gap: 1.25rem;
 }
 
@@ -112,25 +115,31 @@
 /* Tablet and Desktop styles */
 @media (min-width: 520px) {
   .register-container {
-    padding: 2rem;
+    padding: 1rem;
+    height: 100vh;
   }
 
   .register-form {
-    max-width: 480px;
+    width: 100%;
     padding: 2.5rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   }
 
   .register-form h2 {
-    font-size: 1.75rem;
+    font-size: 3rem;
+  }
+
+  .register-form p {
+    font-size: 1rem;
   }
 
   .name-group {
-    flex-direction: row;
-    gap: 1rem;
-  }
+  padding: 10px;
+  border: 1px solid red;
+}
 
-  .name-group .input-group {
+ .input-group label {
     margin-bottom: 1.25rem;
+    font-size: 1rem;
   }
 }

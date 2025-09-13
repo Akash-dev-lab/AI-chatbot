@@ -8,6 +8,7 @@ const ChatArea = () => {
   const dispatch = useDispatch();
   const { items: messagesByChat, loading } = useSelector((state) => state.messages);
   const { activeChatId: chatId } = useSelector((state) => state.chats);
+  const user = useSelector((state) => state.user);
 
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -58,34 +59,72 @@ const ChatArea = () => {
 
   const messages = messagesByChat[chatId] || [];
 
+  if (!chatId) {
+    return (
+      <div className="flex items-center justify-center flex-col gap-5 h-full w-full px-4">
+      <h2
+        className="welcome-title"
+        style={{
+        fontSize: "clamp(2rem, 8vw, 6rem)",
+        textAlign: "center",
+        wordBreak: "break-word",
+        }}
+      >
+        Welcome, {user?.name || "Guest"}
+      </h2>
+      <p
+        className="welcome-desc"
+        style={{
+        fontSize: "clamp(1rem, 3vw, 2.5rem)",
+        fontWeight: 200,
+        textAlign: "center",
+        }}
+      >
+        I am Your Personal AI Assistent <br />
+        <span
+        style={{
+          fontSize: "clamp(0.8rem, 2vw, 1.25rem)",
+          display: "block",
+          marginTop: "0.5em",
+        }}
+        >
+        Powered by Gemini-2.5-flash
+        </span>
+      </p>
+      </div>
+    );
+  }
+
   return (
     <div className="chat-area">
       <div className="messages">
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          messages.map((msg, idx) => (
-            <div key={msg._id || idx} className={`message ${msg.role}`}>
-              <strong>{msg.role}:</strong> {msg.content}
-            </div>
-          ))
-        )}
-        <div ref={messagesEndRef} />
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            messages.map((msg, idx) => (
+              <div key={msg._id || idx} className={`message ${msg.role}`}>
+                <strong>{msg.role}:</strong> {msg.content}
+              </div>
+            ))
+          )}
+          <div ref={messagesEndRef} />
       </div>
 
-      <div className="chat-input">
-        <input
-          type="text"
-          placeholder="Type a message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          disabled={isTyping}
-        />
-        <button onClick={handleSend} disabled={isTyping}>
-          ➤
-        </button>
-      </div>
+      {chatId && (
+        <div className="chat-input">
+          <input
+            type="text"
+            placeholder="Type a message..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            disabled={isTyping}
+          />
+          <button onClick={handleSend} disabled={isTyping}>
+            ➤
+          </button>
+        </div>
+      )}
     </div>
   );
 };

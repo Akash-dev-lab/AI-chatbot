@@ -6,6 +6,8 @@ import { fetchChats, createChat, setActiveChat } from "../features/chats/chatsSl
 import { useState, useEffect } from "react";
 import NewChatModal from "./NewChatModal";
 import ThemeToggle from "./ThemeToggle";
+import AuthRequiredModal from "../components/AuthRequiredModal";
+import { fetchCurrentUser } from "../features/user/userSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -14,14 +16,23 @@ const Sidebar = () => {
   const { list = [], activeChatId } = useSelector((state) => state.chats);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
+  const [authModal, setAuthModal] = useState(false);
 
   // ✅ Fetch chats on mount
   useEffect(() => {
     dispatch(fetchChats());
+    dispatch(fetchCurrentUser());
+    
   }, [dispatch]);
+
+//   useEffect(() => {
+//   console.log("Redux User:", user);
+// }, [user]);
 
   // ✅ Create new chat
   const handleCreateChat = () => {
+    //  if (!user?._id) return setAuthModal(true);
+    console.log(user)
     if (!title.trim()) return;
     dispatch(createChat(title));
     setIsModalOpen(false);
@@ -74,12 +85,15 @@ const Sidebar = () => {
         <div className="sidebar-bottom">
           <div className="profile">
             <img src={user?.profilePic} alt="profile" className="profile-pic" />
-            <span>{user?.name}</span>
+            <div className="flex flex-col text-lg">
+              <span className="profile-name">{user?.name || "Guest"}</span>
+              <small className="profile-email">{user?.email || ""}</small>
+            </div>
           </div>
           <button className="upgrade-btn">
             {user?.plan === "Free" ? "Upgrade" : "Pro"}
           </button>
-           <ThemeToggle />
+          <ThemeToggle />
         </div>
       </div>
 
@@ -90,6 +104,10 @@ const Sidebar = () => {
         setTitle={setTitle}
         onClose={() => setIsModalOpen(false)}
         onCreate={handleCreateChat}
+      />
+       <AuthRequiredModal
+        isOpen={authModal}
+        onClose={() => setAuthModal(false)}
       />
     </>
   );
