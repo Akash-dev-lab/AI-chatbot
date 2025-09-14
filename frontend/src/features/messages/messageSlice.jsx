@@ -20,7 +20,7 @@ export const fetchMessages = createAsyncThunk(
 const messagesSlice = createSlice({
   name: "messages",
   initialState: {
-    items: {},   // { chatId: [messages] }
+    items: {},
     loading: false,
     error: null,
   },

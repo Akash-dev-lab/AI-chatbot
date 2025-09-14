@@ -10,7 +10,7 @@ const ChatArea = () => {
   const { activeChatId: chatId, list } = useSelector((state) => state.chats);
   const user = useSelector((state) => state.user);
   const activeChat = chatId ? list.find((chat) => chat._id === chatId) : null;
-
+  const isLoggedIn = !!user?._id;
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
 
@@ -63,35 +63,40 @@ const ChatArea = () => {
   if (!chatId) {
     return (
       <div className="flex items-center justify-center flex-col gap-5 h-full w-full px-4">
-      <h2
-        className="welcome-title"
-        style={{
-        fontSize: "clamp(2rem, 8vw, 6rem)",
-        textAlign: "center",
-        wordBreak: "break-word",
-        }}
-      >
-        Welcome, {user?.name || "Guest"}
-      </h2>
-      <p
-        className="welcome-desc"
-        style={{
-        fontSize: "clamp(1rem, 3vw, 2.5rem)",
-        fontWeight: 200,
-        textAlign: "center",
-        }}
-      >
-        I am Your Personal AI Assistent <br />
-        <span
-        style={{
-          fontSize: "clamp(0.8rem, 2vw, 1.25rem)",
-          display: "block",
-          marginTop: "0.5em",
-        }}
+        <h2
+          className="welcome-title"
+          style={{
+            fontSize: "clamp(2rem, 8vw, 6rem)",
+            textAlign: "center",
+            wordBreak: "break-word",
+          }}
         >
-        Powered by Gemini-2.5-flash
-        </span>
-      </p>
+          Welcome, {user?.name || "Guest"}
+        </h2>
+        {!isLoggedIn && (
+        <p className="text-red-500 text-4xl mt-3" style={{ fontSize: "clamp(1rem, 2.5vw, 1.5rem)" }}>
+          Login Required to create a chat.
+        </p>
+      )}
+        <p
+          className="welcome-desc"
+          style={{
+            fontSize: "clamp(1rem, 3vw, 2.5rem)",
+            fontWeight: 200,
+            textAlign: "center",
+          }}
+        >
+          I am Your Personal AI Assistent <br />
+          <span
+            style={{
+              fontSize: "clamp(0.8rem, 2vw, 1.25rem)",
+              display: "block",
+              marginTop: "0.5em",
+            }}
+          >
+            Powered by Gemini-2.5-flash
+          </span>
+        </p>
       </div>
     );
   }
@@ -102,16 +107,49 @@ const ChatArea = () => {
         {activeChat ? `${activeChat.title}✨` : "No chat selected"}
       </div>
       <div className="messages">
-          {loading ? (
-            <p>Loading...</p>
-          ) : (
-            messages.map((msg, idx) => (
-              <div key={msg._id || idx} className={`message ${msg.role}`}>
-                <strong>{msg.role}:</strong> {msg.content}
-              </div>
-            ))
-          )}
-          <div ref={messagesEndRef} />
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          messages.map((msg, idx) => (
+            <div key={msg._id || idx} className={`chat-message ${msg.role === "user" ? "user-msg" : "bot-msg"}`}>
+              {msg.role === "model" ? (
+                <>
+                  <img
+                    src="/bot-avatar.png"
+                    alt="Bot"
+                    className="avatar"
+                  />
+                  <div className="bubble bot-bubble">
+                    {msg.content}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="bubble user-bubble">
+                    {msg.content}
+                  </div>
+                  <img
+                    src={user?.profilePic || "https://via.placeholder.com/40"}
+                    alt="User"
+                    className="avatar"
+                  />
+                </>
+              )}
+            </div>
+          ))
+        )}
+
+        {isTyping && (
+          <div className="typing-indicator">
+            <div className="gemini-loader">
+              <span></span>
+              <span></span>
+              <span></span>
+
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
       </div>
 
       {chatId && (

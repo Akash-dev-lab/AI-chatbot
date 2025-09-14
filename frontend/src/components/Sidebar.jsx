@@ -3,11 +3,12 @@ import { FaPlus, FaSearch, FaBook, FaBars } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleSidebar } from "../features/sidebar/sidebarSlice";
 import { fetchChats, createChat, setActiveChat } from "../features/chats/chatsSlice";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import NewChatModal from "./NewChatModal";
 import ThemeToggle from "./ThemeToggle";
 import AuthRequiredModal from "../components/AuthRequiredModal";
-import { fetchCurrentUser } from "../features/user/userSlice";
+import { fetchCurrentUser, logoutUser, uploadProfilePic } from "../features/user/userSlice";
+import { LogOut } from "lucide-react";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -17,26 +18,44 @@ const Sidebar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [authModal, setAuthModal] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const fileInputRef = useRef(null);
 
   // ✅ Fetch chats on mount
   useEffect(() => {
     dispatch(fetchChats());
     dispatch(fetchCurrentUser());
-    
   }, [dispatch]);
 
-//   useEffect(() => {
-//   console.log("Redux User:", user);
-// }, [user]);
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const handleUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    dispatch(uploadProfilePic(file));
+  };
+
+  const handleProfileClick = () => {
+    if (!user?._id) return setAuthModal(true); // unauthorized users
+    fileInputRef.current.click();
+  };
 
   // ✅ Create new chat
   const handleCreateChat = () => {
-    //  if (!user?._id) return setAuthModal(true);
+    if (!user?._id) return setAuthModal(true);
     console.log(user)
     if (!title.trim()) return;
     dispatch(createChat(title));
     setIsModalOpen(false);
     setTitle("");
+  };
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
   };
 
   return (
@@ -84,18 +103,37 @@ const Sidebar = () => {
         {/* Bottom Profile Section */}
         <div className="sidebar-bottom">
           <div className="profile">
-            <img src={user?.profilePic} alt="profile" className="profile-pic" />
+            <img src={user?.profilePic} alt="profile" onClick={handleProfileClick} className="profile-pic cursor-pointer" />
+            <input
+              type="file"
+              accept="image/*"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+              onChange={handleUpload}
+            />
             <div className="flex flex-col text-lg">
               <span className="profile-name">{user?.name || "Guest"}</span>
               <small className="profile-email">{user?.email || ""}</small>
             </div>
           </div>
+          {user?._id && (
+            <button className="sidebar-option logout-btn" onClick={handleLogout}>
+              <LogOut size={16} /> <span>Logout</span>
+            </button>
+          )}
           <button className="upgrade-btn">
             {user?.plan === "Free" ? "Upgrade" : "Pro"}
           </button>
           <ThemeToggle />
         </div>
       </div>
+
+      {isOpen && windowWidth <= 768 && (
+        <div
+          className="overlay"
+          onClick={() => dispatch(toggleSidebar())}
+        />
+      )}
 
       {/* Modal */}
       <NewChatModal
@@ -105,7 +143,7 @@ const Sidebar = () => {
         onClose={() => setIsModalOpen(false)}
         onCreate={handleCreateChat}
       />
-       <AuthRequiredModal
+      <AuthRequiredModal
         isOpen={authModal}
         onClose={() => setAuthModal(false)}
       />

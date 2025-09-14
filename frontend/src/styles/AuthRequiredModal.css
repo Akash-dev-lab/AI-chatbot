@@ -6,6 +6,7 @@
   justify-content: center;
   align-items: center;
   z-index: 999;
+  z-index: 2000;
 }
 
 .auth-modal {
@@ -16,6 +17,7 @@
   text-align: center;
   width: 300px;
   position: relative;
+  z-index: 2001;
 }
 
 .auth-message {

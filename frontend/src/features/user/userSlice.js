@@ -15,6 +15,52 @@ export const fetchCurrentUser = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk(
+  "user/logoutUser",
+
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      await axios.post(
+        "http://localhost:3000/api/auth/logout",
+        {},
+        { withCredentials: true }
+      );
+      dispatch(clearUser());
+      window.location.reload();
+      return true; // success
+    } catch (err) {
+      return rejectWithValue(err.response?.data || "Logout failed");
+    }
+  }
+);
+
+export const uploadProfilePic = createAsyncThunk(
+  "user/uploadProfilePic",
+  async (file, { rejectWithValue, dispatch }) => {
+    try {
+      const formData = new FormData();
+      formData.append("profilePic", file);
+
+      const res = await axios.post(
+        "http://localhost:3000/api/auth/upload-profile",
+        formData,
+        {
+          withCredentials: true,
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      // Redux state update
+      dispatch(updateUser({ profilePic: res.data.profilePic }));
+      dispatch(setUser(res.data.user));
+
+      return res.data.profilePic;
+    } catch (err) {
+      return rejectWithValue("Upload failed");
+    }
+  }
+);
+
 const initialState = {
   _id: null,
   name: "Guest",
@@ -57,6 +103,20 @@ const userSlice = createSlice({
       })
       .addCase(fetchCurrentUser.rejected, (state) => {
         state.loading = false;
+      })
+      // logoutUser
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(logoutUser.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(uploadProfilePic.fulfilled, (state, action) => {
+        state.loading = false;
+        state.profilePic = action.payload; // new imagekit URL
       });
   },
 });

@@ -25,7 +25,7 @@ const Login = () => {
        console.log("Login Response:", res);
 
       dispatch(setUser(res.data.user));
-      dispatch(updateUser(res.data.user));
+      // dispatch(updateUser(res.data.user));
       window.location.href = "/";
     } catch (err) {
       console.error("Login Failed:", err.response?.data || err.message);
@@ -37,7 +37,7 @@ const Login = () => {
       <div className="relative">
         <form className="register-form p-10" onSubmit={handleSubmit}>
           <h2>Welcome Back!</h2>
-          <p>Please log in to your account</p>
+          <p>Login into your Credentials.</p>
 
           <div className="input-group">
             <label htmlFor="email">Email</label>

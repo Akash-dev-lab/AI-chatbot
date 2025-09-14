@@ -1,6 +1,7 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const imagekit = require("../utils/imagekit.jsx");
 
 
 async function registerController(req, res) {
@@ -100,8 +101,50 @@ async function profileController(req, res) {
   }
 }
 
+async function logoutController(req, res) {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production", // prod me true
+    sameSite: "strict",
+  });
+
+  return res.status(200).json({ message: "User logged out successfully" });
+}
+
+async function profileUploadController(req, res) {
+   try {
+    const file = req.file;
+
+    if (!file) return res.status(400).json({ error: "No file uploaded" });
+
+    const uploadResponse = await imagekit.upload({
+      file: file.buffer, // Buffer from multer
+      fileName: `${Date.now()}-${file.originalname}`,
+      folder: "profile-pics",
+    });
+
+    console.log(uploadResponse)
+
+     const user = await userModel.findByIdAndUpdate(
+      req.user.id, // middleware se aaya
+      { profilePic: uploadResponse.url },
+      { new: true }
+    ).select("-password");
+
+    return res.json({
+      success: true,
+      user,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Upload failed" });
+  }
+}
+
 module.exports = {
   registerController,
   loginController,
   profileController,
+  logoutController,
+  profileUploadController
 };

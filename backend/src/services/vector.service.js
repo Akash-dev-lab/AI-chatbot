@@ -1,7 +1,7 @@
 const { Pinecone } = require('@pinecone-database/pinecone')
 
 const pc = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY
+  apiKey: process.env.PINECONE_API_KEY,
 });
 const aiChatbotIndex = pc.index('ai-chatbot')
 
