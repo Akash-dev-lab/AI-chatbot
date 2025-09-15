@@ -14,6 +14,9 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    imageUrl: {
+      type: String, // ✅ ImageKit/Cloudinary ka link
+    },
     role: {
         type: String,
         enum: ["user", "model", "system"],
