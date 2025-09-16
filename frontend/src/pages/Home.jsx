@@ -1,7 +1,10 @@
-import Sidebar from "../components/Sidebar";
-import ChatArea from "../components/ChatArea";
 import "../styles/Home.css";
+import { Suspense, lazy } from "react";
 import Aurora from '../ReactBit background/Aurora';;
+import Loader from "../components/Loader";
+
+const Sidebar = lazy(() => import("../components/Sidebar"));
+const ChatArea = lazy(() => import("../components/ChatArea"));
 
 const Home = () => {
   return (
@@ -18,8 +21,13 @@ const Home = () => {
 
       {/* Foreground (UI) */}
       <div className="home-content">
-        <Sidebar />
-        <ChatArea />
+        <Suspense fallback={<Loader text="Loading Sidebar..." />}>
+          <Sidebar />
+        </Suspense>
+
+        <Suspense fallback={<Loader text="Loading Chats..." />}>
+          <ChatArea />
+        </Suspense>
       </div>
     </div>
   );
