@@ -12,10 +12,7 @@ const messageSchema = new mongoose.Schema({
     },
     content: {
         type: String,
-        required: true
-    },
-    imageUrl: {
-      type: String, // ✅ ImageKit/Cloudinary ka link
+        required: false,
     },
     role: {
         type: String,

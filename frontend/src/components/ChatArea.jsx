@@ -82,18 +82,44 @@ const ChatArea = () => {
     fileInputRef.current?.click();
   };
 
+  function toBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
   // NEW: when user selects an image file
-  const handleFileSelected = (e) => {
+  const handleFileSelected = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // For now: just log and close the menu. Later: send file to backend / AI pipeline.
-    console.log("Image selected for AI:", file);
+    try {
+    const base64 = await toBase64(file);
 
-    // OPTIONAL: show optimistic placeholder message (uncomment if you have message schema for images)
-    // dispatch(addMessage({ chatId, content: "[Image sent]", role: "user" }));
+    // Optimistic UI update
+    dispatch(
+      addMessage({
+        chatId,
+        content: "[Image sent]",
+        role: "user",
+        imageUrl: base64,
+      })
+    );
 
-    // reset input file so same file can be selected again if needed
+    // Send to AI via socket
+    socketRef.current.emit("ai-message", {
+      chat: chatId,
+      content: "",
+      imageUrl: base64,
+    });
+
+  } catch (err) {
+    console.error("Image handling failed:", err);
+  }
+
     e.target.value = "";
   };
 
@@ -155,7 +181,7 @@ const ChatArea = () => {
               ) : (
                 <>
                   <div className="bubble user-bubble">{msg.content}</div>
-                  <img src="/user-avatar.png" alt="User" className="avatar" />
+                  <img src={user?.profilePic} alt="User" className="avatar" />
                 </>
               )}
             </div>

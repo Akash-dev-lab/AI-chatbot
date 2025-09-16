@@ -10,7 +10,7 @@ const { createMemory, queryMemory } = require("../services/vector.service");
 function initSocketServer(httpServer) {
   const io = new Server(httpServer, {
     cors: {
-      origin: "http://localhost:5173", // frontend ka origin
+      origin: "http://localhost:5173",
       methods: ["GET", "POST"],
       credentials: true,
     },
@@ -20,7 +20,7 @@ function initSocketServer(httpServer) {
     const cookies = cookie.parse(socket.handshake.headers?.cookie || "");
 
     if (!cookies.token)
-      next(new Error("Authorization error: No token provided."));
+      return next(new Error("Authorization error: No token provided."));
 
     try {
       const decoded = jwt.verify(cookies.token, process.env.JWT_SECRET_KEY);
@@ -36,101 +36,121 @@ function initSocketServer(httpServer) {
 
   io.on("connection", (socket) => {
     socket.on("ai-message", async (messagePayload) => {
-      const [message, vectors] = await Promise.all([
-        messageModel.create({
-          chat: messagePayload.chat,
-          user: socket.user._id,
-          content: messagePayload.content,
-          role: "user",
-        }),
-        generateVector(messagePayload.content),
-      ]);
-
-      await chatModel.findByIdAndUpdate(messagePayload.chat, {
-        $push: { messages: message._id },
-        $set: { lastActivity: Date.now() },
-      });
-
-      await createMemory({
-        vectors,
-        messageId: message._id,
-        metadata: {
-          chat: messagePayload.chat,
-          user: socket.user._id,
-          text: messagePayload.content,
-        },
-      });
-
-      const [memory, chatHistory] = await Promise.all([
-        queryMemory({
-          queryVector: vectors,
-          limit: 3,
-          metadata: {
-            user: socket.user._id,
-          },
-        }),
-
-        messageModel
-          .find({
+      try {
+        // Save user message
+        const [message, vectors] = await Promise.all([
+          messageModel.create({
             chat: messagePayload.chat,
-          })
-          .sort({ createdAt: -1 })
-          .limit(20)
-          .lean()
-          .then((messages) => messages.reverse()),
-      ]);
+            user: socket.user._id,
+            content: messagePayload.content || "",
+            imageUrl: messagePayload.imageUrl || null,
+            role: "user",
+            type: messagePayload.imageUrl ? "image" : "text",
+          }),
+          messagePayload.content ? generateVector(messagePayload.content) : null,
+        ]);
 
-      const stm = chatHistory.map((item) => {
-        return {
-          role: item.role,
-          parts: [{ text: item.content }],
-        };
-      });
+        await chatModel.findByIdAndUpdate(messagePayload.chat, {
+          $push: { messages: message._id },
+          $set: { lastActivity: Date.now() },
+        });
 
-      const ltm = [
-        {
-          role: "user",
-          parts: [
-            {
-              text: `these are some previous message from the chat, use them to generate a response ${memory
-                .map((item) => item.metadata.text)
-                .join("\n")}`,
+        if (vectors) {
+          await createMemory({
+            vectors,
+            messageId: message._id,
+            metadata: {
+              chat: messagePayload.chat,
+              user: socket.user._id,
+              text: messagePayload.content,
             },
-          ],
-        },
-      ];
+          });
+        }
 
-      const response = await generateResponse([...ltm, ...stm]);
+        // Get memory + chat history
+        const [memory, chatHistory] = await Promise.all([
+          vectors
+            ? queryMemory({
+                queryVector: vectors,
+                limit: 3,
+                metadata: {
+                  user: socket.user._id,
+                },
+              })
+            : [],
+          messageModel
+            .find({
+              chat: messagePayload.chat,
+            })
+            .sort({ createdAt: -1 })
+            .limit(20)
+            .lean()
+            .then((messages) => messages.reverse()),
+        ]);
 
-      socket.emit("ai-response", {
-        content: response,
-        chat: messagePayload.chat,
-      });
+        const stm = chatHistory.map((item) => ({
+          role: item.role,
+          parts: item.content ? [{ text: item.content }] : [],
+        }));
 
-      const [responseMessage, responseVectors] = await Promise.all([
-        messageModel.create({
+        const ltm = memory.length
+          ? [
+              {
+                role: "user",
+                parts: [
+                  {
+                    text: `These are some previous messages from the chat, use them to generate a response:\n${memory
+                      .map((item) => item.metadata.text)
+                      .join("\n")}`,
+                  },
+                ],
+              },
+            ]
+          : [];
+
+        // Generate AI response (with text + optional image)
+        const responseText = await generateResponse(
+          messagePayload.content || "",
+          messagePayload.imageUrl || null
+        );
+
+        socket.emit("ai-response", {
+          content: responseText,
           chat: messagePayload.chat,
-          user: socket.user._id,
-          content: response,
-          role: "model",
-        }),
-        generateVector(response),
-      ]);
+        });
 
-      await chatModel.findByIdAndUpdate(messagePayload.chat, {
-        $push: { messages: responseMessage._id },
-        $set: { lastActivity: Date.now() },
-      });
+        // Save AI response
+        const [responseMessage, responseVectors] = await Promise.all([
+          messageModel.create({
+            chat: messagePayload.chat,
+            user: socket.user._id,
+            content: responseText,
+            role: "model",
+          }),
+          generateVector(responseText),
+        ]);
 
-      await createMemory({
-        vectors: responseVectors,
-        messageId: responseMessage._id,
-        metadata: {
+        await chatModel.findByIdAndUpdate(messagePayload.chat, {
+          $push: { messages: responseMessage._id },
+          $set: { lastActivity: Date.now() },
+        });
+
+        await createMemory({
+          vectors: responseVectors,
+          messageId: responseMessage._id,
+          metadata: {
+            chat: messagePayload.chat,
+            user: socket.user._id,
+            text: responseText,
+          },
+        });
+      } catch (err) {
+        console.error("Socket AI Error:", err.message);
+        socket.emit("ai-response", {
+          content: "⚠️ Something went wrong while generating response.",
           chat: messagePayload.chat,
-          user: socket.user._id,
-          text: response,
-        },
-      });
+        });
+      }
     });
   });
 }
