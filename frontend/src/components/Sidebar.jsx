@@ -47,7 +47,6 @@ const Sidebar = () => {
   // ✅ Create new chat
   const handleCreateChat = () => {
     if (!user?._id) return setAuthModal(true);
-    console.log(user)
     if (!title.trim()) return;
     dispatch(createChat(title));
     setIsModalOpen(false);

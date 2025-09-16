@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema(
 
     profilePic: {
       type: String,
-      default: "https://via.placeholder.com/40", // default image
+      default: "https://via.placeholder.com/40",
     },
 
     email: {

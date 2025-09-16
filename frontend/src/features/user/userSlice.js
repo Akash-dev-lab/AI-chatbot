@@ -27,7 +27,7 @@ export const logoutUser = createAsyncThunk(
       );
       dispatch(clearUser());
       window.location.reload();
-      return true; // success
+      return true;
     } catch (err) {
       return rejectWithValue(err.response?.data || "Logout failed");
     }

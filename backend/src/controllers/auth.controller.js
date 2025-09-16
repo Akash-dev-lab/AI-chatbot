@@ -123,8 +123,6 @@ async function profileUploadController(req, res) {
       folder: "profile-pics",
     });
 
-    console.log(uploadResponse)
-
      const user = await userModel.findByIdAndUpdate(
       req.user.id, // middleware se aaya
       { profilePic: uploadResponse.url },

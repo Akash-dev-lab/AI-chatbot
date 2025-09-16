@@ -1,4 +1,3 @@
-// src/app/store.js
 import { configureStore } from "@reduxjs/toolkit";
 import sidebarReducer from "../src/features/sidebar/sidebarSlice";
 import chatsReducer from "../src/features/chats/chatsSlice";

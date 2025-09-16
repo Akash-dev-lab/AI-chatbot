@@ -3,7 +3,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import "../styles/Login.css";
 import { BorderBeam } from "@/components/magicui/border-beam"; 
-import { updateUser, setUser } from "../features/user/userSlice";
+import { setUser } from "../features/user/userSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -22,10 +22,7 @@ const Login = () => {
         { withCredentials: true }
       );
 
-       console.log("Login Response:", res);
-
       dispatch(setUser(res.data.user));
-      // dispatch(updateUser(res.data.user));
       window.location.href = "/";
     } catch (err) {
       console.error("Login Failed:", err.response?.data || err.message);

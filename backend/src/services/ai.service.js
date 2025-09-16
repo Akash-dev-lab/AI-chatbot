@@ -45,7 +45,6 @@ async function generateResponse(text = "", imageUrl = null) {
       },
     });
 
-    // Ensure response.text exists
     return response?.text || "⚠️ No response generated.";
   } catch (error) {
     console.error("Google GenAI Error:", error.message);
@@ -60,7 +59,7 @@ async function generateResponse(text = "", imageUrl = null) {
 
 async function generateVector(content) {
   if (!content || content.trim().length === 0) {
-    return null; // skip empty content
+    return null;
   }
 
   const response = await ai.models.embedContent({

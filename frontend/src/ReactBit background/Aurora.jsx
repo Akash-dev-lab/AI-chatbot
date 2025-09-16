@@ -1,8 +1,6 @@
 import { Renderer, Program, Mesh, Color, Triangle } from 'ogl';
 import { useEffect, useRef } from 'react';
 
-import '../ReactBit background/Aurora.css';
-
 const VERT = `#version 300 es
 in vec2 position;
 void main() {
@@ -198,5 +196,5 @@ export default function Aurora(props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amplitude]);
 
-  return <div ref={ctnDom} className="aurora-container" />;
+  return <div ref={ctnDom} className="aurora-container w-full h-full" />;
 }

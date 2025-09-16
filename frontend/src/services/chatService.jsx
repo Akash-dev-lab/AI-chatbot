@@ -2,7 +2,7 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL: "http://localhost:3000/api/chat",
-  withCredentials: true, // 👈 token wali cookie bhejega
+  withCredentials: true,
 });
 
 export const createChat = async (title) => {

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion"; // for smooth animations
-import { X } from "lucide-react"; // cool close icon
+import { motion } from "framer-motion";
+import { X } from "lucide-react";
 
 const AuthRequiredModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();

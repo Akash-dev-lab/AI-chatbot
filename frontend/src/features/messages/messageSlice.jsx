@@ -1,8 +1,7 @@
-// src/features/messages/messageSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// 🔹 Sirf history fetch karne ke liye REST API use karenge
+
 export const fetchMessages = createAsyncThunk(
   "messages/fetchMessages",
   async (chatId, { rejectWithValue }) => {

@@ -12,21 +12,15 @@ const ChatArea = () => {
   const { activeChatId: chatId, list } = useSelector((state) => state.chats);
   const user = useSelector((state) => state.user);
   const activeChat = chatId ? list.find((chat) => chat._id === chatId) : null;
-
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-
-  // NEW: toggles the + menu options
   const [showOptions, setShowOptions] = useState(false);
   const optionsRef = useRef(null);
-
-  // hidden file input to trigger system picker
   const fileInputRef = useRef(null);
-
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
 
-  // Connect socket on mount
+
   useEffect(() => {
     socketRef.current = io("http://localhost:3000", { withCredentials: true });
 
@@ -40,19 +34,19 @@ const ChatArea = () => {
     };
   }, [dispatch]);
 
-  // Fetch history when activeChatId changes
+
   useEffect(() => {
     if (chatId) {
       dispatch(fetchMessages(chatId));
     }
   }, [chatId, dispatch]);
 
-  // Scroll to bottom when messages change
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messagesByChat, chatId]);
 
-  // Close options when clicking outside
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (optionsRef.current && !optionsRef.current.contains(e.target)) {
@@ -66,17 +60,16 @@ const ChatArea = () => {
   const handleSend = () => {
     if (!input.trim() || !chatId) return;
 
-    // optimistic UI
+
     dispatch(addMessage({ chatId, content: input, role: "user" }));
     setIsTyping(true);
     socketRef.current.emit("ai-message", { chat: chatId, content: input });
     setInput("");
   };
 
-  // NEW: when + clicked
+
   const toggleOptions = () => setShowOptions((s) => !s);
 
-  // NEW: open system file picker
   const handleOpenFilePicker = () => {
     setShowOptions(false);
     fileInputRef.current?.click();
@@ -91,7 +84,7 @@ const ChatArea = () => {
     });
   }
 
-  // NEW: when user selects an image file
+
   const handleFileSelected = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -99,7 +92,6 @@ const ChatArea = () => {
     try {
     const base64 = await toBase64(file);
 
-    // Optimistic UI update
     dispatch(
       addMessage({
         chatId,
@@ -109,7 +101,6 @@ const ChatArea = () => {
       })
     );
 
-    // Send to AI via socket
     socketRef.current.emit("ai-message", {
       chat: chatId,
       content: "",
@@ -175,7 +166,7 @@ const ChatArea = () => {
             <div key={msg._id || idx} className={`chat-message ${msg.role === "user" ? "user-msg" : "bot-msg"}`}>
               {msg.role === "model" ? (
                 <>
-                  <img src="/bot-avatar.png" alt="Bot" className="avatar" />
+                  <img src="/bot.png" alt="Bot" className="avatar w-50 h-50" />
                   <div className="bubble bot-bubble">{msg.content}</div>
                 </>
               ) : (
@@ -200,10 +191,9 @@ const ChatArea = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* CHAT INPUT */}
+  
       {chatId && (
         <div className="chat-input" style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {/* + button */}
           <div style={{ position: "relative" }} ref={optionsRef}>
             <button
               onClick={toggleOptions}
@@ -261,7 +251,6 @@ const ChatArea = () => {
             </AnimatePresence>
           </div>
 
-          {/* hidden file input */}
           <input
             ref={fileInputRef}
             type="file"
@@ -270,7 +259,6 @@ const ChatArea = () => {
             onChange={handleFileSelected}
           />
 
-          {/* text input */}
           <input
             type="text"
             placeholder="Type a message..."
@@ -288,7 +276,6 @@ const ChatArea = () => {
             }}
           />
 
-          {/* send button */}
           <button
             onClick={handleSend}
             disabled={isTyping}
