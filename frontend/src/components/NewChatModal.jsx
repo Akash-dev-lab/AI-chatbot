@@ -1,4 +1,3 @@
-import React from "react";
 import "../styles/NewChatModal.css";
 
 const NewChatModal = ({ isOpen, title, setTitle, onClose, onCreate }) => {
@@ -6,10 +5,8 @@ const NewChatModal = ({ isOpen, title, setTitle, onClose, onCreate }) => {
 
   return (
     <>
-      {/* Backdrop */}
       <div className="modal-backdrop" onClick={onClose} />
 
-      {/* Modal */}
       <div className="modal">
         <h2 className="modal-title">✨ Start a New Chat</h2>
         <input

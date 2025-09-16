@@ -71,7 +71,6 @@ const Login = () => {
           </div>
         </form>
 
-        {/* BorderBeam applied on form border */}
         <BorderBeam duration={8} size={100} />
       </div>
     </div>

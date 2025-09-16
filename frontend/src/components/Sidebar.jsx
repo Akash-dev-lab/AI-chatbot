@@ -21,7 +21,6 @@ const Sidebar = () => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const fileInputRef = useRef(null);
 
-  // ✅ Fetch chats on mount
   useEffect(() => {
     dispatch(fetchChats());
     dispatch(fetchCurrentUser());
@@ -40,11 +39,11 @@ const Sidebar = () => {
   };
 
   const handleProfileClick = () => {
-    if (!user?._id) return setAuthModal(true); // unauthorized users
+    if (!user?._id) return setAuthModal(true);
     fileInputRef.current.click();
   };
 
-  // ✅ Create new chat
+  
   const handleCreateChat = () => {
     if (!user?._id) return setAuthModal(true);
     if (!title.trim()) return;

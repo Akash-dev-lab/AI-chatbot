@@ -48,7 +48,6 @@ const Register = () => {
           <h2>Create Account</h2>
           <p>Let's get started with your free account</p>
 
-          {/* 🔹 First + Last name ek hi row me */}
           <div className="flex gap-4">
             <div className="input-group flex-1">
               <label htmlFor="firstName">First Name</label>
