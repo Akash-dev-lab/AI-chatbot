@@ -19,5 +19,10 @@ app.use("/api/auth/", authRoutes)
 app.use("/api/chat/", chatRoutes )
 app.use("/api/message", messageRoutes)
 
+app.get("/", (req, res) => {
+  res.send("AI Chatbot backend is running!");
+});
+
+
 
 module.exports = app
