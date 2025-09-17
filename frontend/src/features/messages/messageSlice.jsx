@@ -6,7 +6,7 @@ export const fetchMessages = createAsyncThunk(
   "messages/fetchMessages",
   async (chatId, { rejectWithValue }) => {
     try {
-      const res = await axios.get(`httpss:/-i-chatbab-1-qxr6.onrender.comqxr6.onrender.com/api/message/${chatId}`, {
+      const res = await axios.get(`http://localhost:3000/api/message/${chatId}`, {
         withCredentials: true,
       });
       return { chatId, messages: res.data };

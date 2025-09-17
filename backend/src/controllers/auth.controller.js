@@ -18,7 +18,7 @@ async function registerController(req, res) {
       message: "User Already Exist.",
     });
 
-  const user = userModel.create({
+  const user = await userModel.create({
     fullName: {
       firstName,
       lastName,
@@ -27,7 +27,7 @@ async function registerController(req, res) {
     password: await bcrypt.hash(password, 10),
   });
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {expiresIn: '7d'});
 
   res.cookie("token", token);
 

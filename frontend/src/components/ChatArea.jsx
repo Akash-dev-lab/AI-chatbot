@@ -19,10 +19,11 @@ const ChatArea = () => {
   const fileInputRef = useRef(null);
   const socketRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
 
   useEffect(() => {
-    socketRef.current = io("https://ai-chatbot-1-qxr6.onrender.com", { withCredentials: true });
+    socketRef.current = io("http://localhost:3000", { withCredentials: true });
 
     socketRef.current.on("ai-response", (data) => {
       dispatch(addMessage({ chatId: data.chat, content: data.content, role: "model" }));
@@ -90,26 +91,26 @@ const ChatArea = () => {
     if (!file) return;
 
     try {
-    const base64 = await toBase64(file);
+      const base64 = await toBase64(file);
 
-    dispatch(
-      addMessage({
-        chatId,
-        content: "[Image sent]",
-        role: "user",
+      dispatch(
+        addMessage({
+          chatId,
+          content: "[Image sent]",
+          role: "user",
+          imageUrl: base64,
+        })
+      );
+
+      socketRef.current.emit("ai-message", {
+        chat: chatId,
+        content: "",
         imageUrl: base64,
-      })
-    );
+      });
 
-    socketRef.current.emit("ai-message", {
-      chat: chatId,
-      content: "",
-      imageUrl: base64,
-    });
-
-  } catch (err) {
-    console.error("Image handling failed:", err);
-  }
+    } catch (err) {
+      console.error("Image handling failed:", err);
+    }
 
     e.target.value = "";
   };
@@ -171,7 +172,30 @@ const ChatArea = () => {
                 </>
               ) : (
                 <>
-                  <div className="bubble user-bubble">{msg.content}</div>
+                  {msg.imageUrl ? (
+                    <img
+                      src={msg.imageUrl}
+                      alt="sent"
+                      className="max-w-[200px] rounded-lg shadow-md cursor-pointer transition-transform duration-300 hover:scale-105"
+                      onClick={() => setPreviewImage(msg.imageUrl)}
+                    />
+                  ) : (
+                    <p className="bubble user-bubble">{msg.content}</p>
+                  )}
+
+                  {previewImage && (
+                    <div
+                      className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+                      onClick={() => setPreviewImage(null)}
+                    >
+                      <img
+                        src={previewImage}
+                        alt="preview"
+                        className="max-h-[90%] max-w-[90%] rounded-xl shadow-2xl transform scale-90 animate-zoomIn"
+                      />
+                    </div>
+                  )}
+
                   <img src={user?.profilePic} alt="User" className="avatar" />
                 </>
               )}
@@ -191,7 +215,7 @@ const ChatArea = () => {
         <div ref={messagesEndRef} />
       </div>
 
-  
+
       {chatId && (
         <div className="chat-input" style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <div style={{ position: "relative" }} ref={optionsRef}>

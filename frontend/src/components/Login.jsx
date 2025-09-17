@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://ai-chatbot-1-qxr6.onrender.com/api/auth/login",
+        "http://localhost:3000/api/auth/login",
         {
           email: email,
           password: password,
