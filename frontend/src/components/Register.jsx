@@ -21,7 +21,7 @@ const Register = () => {
     e.preventDefault();
     axios
       .post(
-        "http://localhost:3000/api/auth/register",
+        "https://ai-chatbot-1-qxr6.onrender.com/api/auth/register",
         {
           fullName: {
             firstName: formData.firstName,
