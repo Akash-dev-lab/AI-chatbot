@@ -24,7 +24,7 @@ const ChatArea = () => {
 
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:3000", { withCredentials: true });
+    socketRef.current = io("https://ai-chatbot-1-qxr6.onrender.com", { withCredentials: true });
 
     socketRef.current.on("ai-response", (data) => {
       dispatch(addMessage({ chatId: data.chat, content: data.content, role: "model", isNew: true }));
