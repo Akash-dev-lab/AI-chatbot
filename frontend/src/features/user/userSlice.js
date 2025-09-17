@@ -5,7 +5,7 @@ export const fetchCurrentUser = createAsyncThunk(
   "user/fetchCurrentUser",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get("https://ai-chatbot-1-qxr6.onrender.com/api/auth/profile", {
+      const res = await axios.get("http://localhost:3000/api/auth/profile", {
         withCredentials: true,
       });
       return res.data;
@@ -21,7 +21,7 @@ export const logoutUser = createAsyncThunk(
   async (_, { dispatch, rejectWithValue }) => {
     try {
       await axios.post(
-        "https://ai-chatbot-1-qxr6.onrender.com/api/auth/logout",
+        "http://localhost:3000/api/auth/logout",
         {},
         { withCredentials: true }
       );
@@ -42,7 +42,7 @@ export const uploadProfilePic = createAsyncThunk(
       formData.append("profilePic", file);
 
       const res = await axios.post(
-        "https://ai-chatbot-1-qxr6.onrender.comprofile",
+        "http://localhost:3000profile",
         formData,
         {
           withCredentials: true,

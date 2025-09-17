@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchMessages, addMessage } from "../features/messages/messageSlice";
 import { FaPlus, FaImage } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
+import TypingEffect from "../ui/TypingEffect";
 
 const ChatArea = () => {
   const dispatch = useDispatch();
@@ -23,10 +24,10 @@ const ChatArea = () => {
 
 
   useEffect(() => {
-    socketRef.current = io("https://ai-chatbot-1-qxr6.onrender.com", { withCredentials: true });
+    socketRef.current = io("http://localhost:3000", { withCredentials: true });
 
     socketRef.current.on("ai-response", (data) => {
-      dispatch(addMessage({ chatId: data.chat, content: data.content, role: "model" }));
+      dispatch(addMessage({ chatId: data.chat, content: data.content, role: "model", isNew: true }));
       setIsTyping(false);
     });
 
@@ -164,11 +165,20 @@ const ChatArea = () => {
           <p>Loading...</p>
         ) : (
           messages.map((msg, idx) => (
-            <div key={msg._id || idx} className={`chat-message ${msg.role === "user" ? "user-msg" : "bot-msg"}`}>
+            <div
+              key={msg._id || idx}
+              className={`chat-message ${msg.role === "user" ? "user-msg" : "bot-msg"}`}
+            >
               {msg.role === "model" ? (
                 <>
                   <img src="/bot.png" alt="Bot" className="avatar w-50 h-50" />
-                  <div className="bubble bot-bubble">{msg.content}</div>
+                  <div className="bubble bot-bubble">
+                    {msg.isNew ? (
+                      <TypingEffect text={msg.content} speed={25} />
+                    ) : (
+                      <div className="whitespace-pre-line">{msg.content}</div>
+                    )}
+                  </div>
                 </>
               ) : (
                 <>
