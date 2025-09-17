@@ -6,7 +6,7 @@ const ThemeToggle = () => {
   const theme = useSelector((state) => state.theme.theme);
 
   return (
-    <button onClick={() => dispatch(toggleTheme())}>
+    <button className="cursor-pointer" onClick={() => dispatch(toggleTheme())}>
       {theme === "light" ? "🌙 Dark Mode" : "☀️ Light Mode"}
     </button>
   );

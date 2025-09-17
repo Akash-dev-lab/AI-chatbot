@@ -10,7 +10,6 @@
   padding: 1rem 0;
 }
 
-
 .sidebar-top {
   display: flex;
   flex-direction: column;
@@ -33,18 +32,15 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-
 .divider {
   margin: 1rem 0;
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-
 .chats::-webkit-scrollbar {
   display: none;
 }
-
 
 .chats {
   flex: 1;
@@ -72,8 +68,15 @@
   background-color: #444654;
 }
 
-.chat-item.active {
-  background-color: #343541; /* Keep a subtle background highlight */
+/* Active chat light/dark */
+[data-theme="light"] .chat-item.active {
+  background-color: #e5e7eb; /* gray-200 */
+  color: #111827;            /* black text */
+}
+
+[data-theme="dark"] .chat-item.active {
+  background-color: #343541; /* dark */
+  color: #ffffff;
 }
 
 .chat-item.active::before {
@@ -92,7 +95,6 @@
   padding: 10px 15px;
   color: #8e8ea0;
 }
-
 
 .sidebar-bottom {
   padding: 1rem;
@@ -131,22 +133,6 @@
   background: #ff7043;
 }
 
-
-@media (max-width: 768px) {
-  .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    transform: translateX(-100%);
-    z-index: 1000;
-  }
-
-  .sidebar.active {
-    transform: translateX(0);
-  }
-}
-
-/* Hamburger button (mobile only) */
 /* Hamburger button (mobile only) */
 .hamburger {
   position: fixed;
@@ -163,12 +149,32 @@
   cursor: pointer;
 }
 
+/* Hamburger icon light/dark */
 .fa-bars {
-  color: #fff;
   font-size: 1.5rem;
 }
 
+[data-theme="light"] .fa-bars {
+  color: #111827; /* black in light */
+}
+
+[data-theme="dark"] .fa-bars {
+  color: #ffffff; /* white in dark */
+}
+
 @media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+
+  .sidebar.active {
+    transform: translateX(0);
+  }
+
   .hamburger {
     display: flex;
   }
@@ -179,7 +185,6 @@
     display: none;
   }
 }
-
 
 .overlay {
   position: fixed;

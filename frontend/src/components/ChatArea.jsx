@@ -304,9 +304,6 @@ const ChatArea = () => {
               flex: 1,
               padding: "12px 16px",
               borderRadius: 24,
-              background: "rgba(30,30,30,0.9)",
-              color: "white",
-              border: "1px solid rgba(255,255,255,0.04)",
             }}
           />
 
