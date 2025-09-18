@@ -129,7 +129,7 @@ Create a .env file inside backend/:
 
 
 
-📡 API & Socket Endpoints
+📡 API & Socket Endpoints (Protected Routes)
 
     --> Auth Routes
 
@@ -137,7 +137,7 @@ Create a .env file inside backend/:
         --> POST /api/auth/login → Login
         --> GET /api/auth/profile → profile
         --> POST /api/auth/logout → Logout
-        --> POST /api/auth/upload-profile → upload your profile with (multer)
+        --> POST /api/auth/authUser/upload-profile → upload your profile with (multer)
 
     --> Chat Routes
 
