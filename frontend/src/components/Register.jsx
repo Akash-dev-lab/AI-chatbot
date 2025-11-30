@@ -21,7 +21,7 @@ const Register = () => {
     e.preventDefault();
     axios
       .post(
-        "https://ai-chatbot-1-qxr6.onrender.com/api/auth/register",
+        "https://ai-chatbot-qe6a.onrender.com/api/auth/register",
         {
           fullName: {
             firstName: formData.firstName,

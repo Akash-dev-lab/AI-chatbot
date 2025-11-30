@@ -6,7 +6,7 @@ export const fetchChats = createAsyncThunk(
   "chats/fetchChats",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axios.get("https://ai-chatbot-1-qxr6.onrender.com/api/chat", { withCredentials: true });
+      const res = await axios.get("https://ai-chatbot-qe6a.onrender.com/api/chat", { withCredentials: true });
       return res.data.chats;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -19,7 +19,7 @@ export const createChat = createAsyncThunk(
   "chats/createChat",
   async (title, { rejectWithValue }) => {
     try {
-      const res = await axios.post("https://ai-chatbot-1-qxr6.onrender.com/api/chat", { title }, { withCredentials: true });
+      const res = await axios.post("https://ai-chatbot-qe6a.onrender.com/api/chat", { title }, { withCredentials: true });
       return res.data.chat;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
